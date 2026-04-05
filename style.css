@@ -7,12 +7,14 @@ body{
     align-items: center;
 }
 .container{
-    background-color: cadetblue;
+    background-color:rgb(114, 114, 194);
     padding: 40px;
     border-radius: 15px;
     width: 400px;
 text-align: center;
 box-shadow: 0 4px 5px whitesmoke;
+font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+font-weight: 400;
 }
 h1{
     color: #333;
@@ -36,10 +38,12 @@ h1{
     font-size: 1.5rem;
     border-radius: 5px;
     padding: 5px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 .info{
     color: navy;
 }
 #status{
     color: #333;
+    pointer-events: click;
 }

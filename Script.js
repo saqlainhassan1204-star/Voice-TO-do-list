@@ -1,42 +1,89 @@
+let tasklist = [];
+const elementlist = document.getElementById("tasklist");
+const statusText = document.querySelector(".status");
 
-const taskList=[];
+// Speech recognition
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
 
-const taskelement=document.getElementById("tasklist");
-const state=document.getElementById("state");
+recognition.lang = "en-US";
+recognition.continuous = false;
 
+//  Status + Voice Result
+recognition.onresult = (event) => {
+    let transcript = event.results[0][0].transcript.toLowerCase();
 
-//voice reconition
-const SpeechRecoginition= window.SpeechRecognition();
-const recognition= new SpeechRecoginition();
-recognition.continuous=false;
-recognition.lang='en-US';
+    statusText.innerHTML = `Heard: ${transcript}`;
 
+    //  Add Task
+    if (transcript.startsWith("naya task")) {
+        let task = transcript.replace("naya task", "").trim();
 
-recognition.onresult=(data) =>{
-    const transcript=data.results[0][0].transcript.toLowerCase();
-    state.innerText=`Heard: "${transcript}"`;
-    if(transcript.startsWith("naya task")){
-        const taskText=transcript.replace("Naya task","").trim();
-        if(textTask)
-            AddTask(textTask);}
-
-
-
-
-        else if(transcript.startWith("Delete Task 2"))  {
-            const num=parseInt(transcript.split("")[2])-1;
+        if (task) {
+            Addtask(task);
         }
-        if(!isNaN(num)){
+    }
+
+    // 🗑 Delete Task
+    else if (transcript.startsWith("delete task")) {
+        let num = parseInt(transcript.split(" ")[2]) - 1;
+
+        if (!isNaN(num)) {
             deleteTask(num);
-
         }
-        function AddTask(Task){
+    }
 
+    // ✅ Mark Task
+    else if (transcript.startsWith("mark task")) {
+        let num = parseInt(transcript.split(" ")[2]) - 1;
+
+        if (!isNaN(num)) {
+            Marktask(num);
         }
+    }
+};
 
-        function deleteTask(num){
+//  Add Task
+function Addtask(task) {
+    tasklist.push({ text: task, done: false });
+    RenderTask();
+}
 
-        }
+// Delete Task
+function deleteTask(num) {
+    if (num >= 0 && num < tasklist.length) {
+        tasklist.splice(num, 1);
+        RenderTask();
+    }
+}
 
+// ✅ Mark Task
+function Marktask(num) {
+    if (tasklist[num]) {
+        tasklist[num].done = true;
+        RenderTask();
+    }
+}
 
+// 🔁 Render Tasks (forEach)
+function RenderTask() {
+    elementlist.innerHTML = "";
 
+    tasklist.forEach((task, idx) => {
+        const li = document.createElement("li");
+
+        li.innerText = `${idx + 1}. ${task.text} ${task.done ? "✅" : ""}`;
+
+        elementlist.appendChild(li);
+    });
+}
+
+// ▶ Start Listening
+function Start() {
+    statusText.innerText = "Listening...";
+    recognition.start();   // ✅ FIXED (small s)
+}
+
+// Button Event
+const startbtn = document.getElementById("startbtn");
+startbtn.addEventListener("click", Start);
